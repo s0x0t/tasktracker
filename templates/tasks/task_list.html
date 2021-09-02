@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1 class="uk-text-center">Список задач</h1>
+    <table class="uk-table uk-table-striped uk-table-hover">
+        <thead>
+            <tr>
+            {% for i in ['Задача', 'Исполнитель'] %}
+            <th>{{i}}</th>
+            {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in task_list %}
+            <tr>
+                <td>{{row['description']}}</td>
+                <td>{{row['username']}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
