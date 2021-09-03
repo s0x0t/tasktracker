@@ -17,7 +17,7 @@
             {% for row in task_list %}
             <tr>
                 <td>{{row.description}}</td>
-                <td>{{row.username if row.username else 'не назначен'}}</td>
+                <td><a href="{{url_for('tasks.take_task', task_id=row.id)}}">{{row.username if row.username else 'не назначен, взять в работу'}}</a> </td>
                 <td>{{row.creation_date | local_date}}</td>
             </tr>
             {% endfor %}

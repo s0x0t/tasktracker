@@ -3,8 +3,7 @@ import os
 from flask import (
     Flask, url_for, render_template, redirect
 )
-from datetime import datetime
-from pprint import pprint
+
 
 
 def create_app():
@@ -24,8 +23,8 @@ def create_app():
     @app.template_filter('local_date')
     def local_date(date_string):
         if date_string:
-            date_object = datetime.strptime(date_string, '%Y-%m-%d')
-            result = datetime.strftime(date_object, '%d.%m.%Y')
+            date_object = db.str_to_date(date_string)
+            result = db.date_to_str(date_object)
         else:
             result = ''
         return result

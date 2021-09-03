@@ -13,6 +13,8 @@ from sqlalchemy.sql import (
 from werkzeug.security import check_password_hash
 from werkzeug.security import generate_password_hash
 
+from datetime import datetime
+
 engine = create_engine('sqlite:///task_tracker.db', echo=True)
 meta = MetaData()
 
@@ -61,6 +63,7 @@ def check_user(login, password):
 def get_task_list(user_id=None):
     with engine.connect() as conn:
         request = select(
+                tasks.c.id,
                 tasks.c.description, 
                 tasks.c.creation_date,
                 users.c.username
@@ -84,6 +87,16 @@ def get_all_tasks():
         task_list = result.fetchall()
     return task_list
 
+def insert_new_task(description):
+    with engine.connect() as conn:
+        result = conn.execute(tasks.insert().values(description=description, creation_date=datetime.date(datetime.now())))
+    return result
+
+def update_take_task(task_id, executor_id):
+    with engine.connect() as conn:
+        result = conn.execute(tasks.update().where(tasks.c.id == task_id).values(executor_id=executor_id))
+    return result
+
 def get_statistics():
     with engine.connect() as conn:
         opened = conn.execute(select(func.count(tasks.c.id)).where(tasks.c.start_date == None)).fetchone()
@@ -92,10 +105,31 @@ def get_statistics():
                 tasks.c.start_date != None,
                 tasks.c.finish_date == None
                 ))).fetchone()
-        median_execute_time = None
+
+        request = select(tasks.c.start_date, tasks.c.finish_date).where(and_(
+            tasks.c.start_date != None,
+            tasks.c.finish_date != None
+            ))
+        executed_tasks = conn.execute(request).fetchall()
+    durations = list()
+    for task in executed_tasks:
+        duration = (str_to_date(task[1]) - str_to_date(task[0])).days
+        durations.append(duration)
+    average_execute_time = sum(durations)/len(durations)
+
     parameter_list = dict()
     parameter_list['Открытых задач'] = opened[0]
     parameter_list['Выполняется задач'] = executing[0]
     parameter_list['Отменённых задач'] = cancelled[0]
+    parameter_list['Среднее время выполнения задачи, дней'] = average_execute_time
 
     return parameter_list
+
+def str_to_date(date_string):
+    date_object = datetime.strptime(date_string, '%Y-%m-%d')
+    return date_object
+
+def date_to_str(date_object):
+    date_string = datetime.strftime(date_object, '%d.%m.%Y')
+    return date_string
+

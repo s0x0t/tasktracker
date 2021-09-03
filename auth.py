@@ -51,8 +51,6 @@ def login():
             session['user_id'] = user['id']
             return redirect(url_for('tasks.open_tasks'))
 
-        flash(error)
-
     return render_template("auth/login.html")
 
 @bp.route('/logout')

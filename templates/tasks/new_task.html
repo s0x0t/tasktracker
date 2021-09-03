@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block header %}
+Мои задачи
+{% endblock %}
+
+{% block content %}
+<div uk-grid>
+    <div class="uk-width-1-1">
+        <form method="post">
+            <div class="uk-margin">
+                <input class="uk-input" id="task_description" name="task_description" type="text" placeholder="Описание задачи" />
+            </div>
+            <input class="uk-input uk-button uk-button-default" type="submit" value="Создать задачу"/>
+        </form>
+    </div>
+</div>
+
+{% endblock %}
