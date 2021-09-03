@@ -1,14 +1,14 @@
 {% extends "base.html" %}
 
 {% block header %}
-Мои задачи
+Мои текущие задачи
 {% endblock %}
 
 {% block content %}
     <table class="uk-table uk-table-striped uk-table-hover">
         <thead>
             <tr>
-            {% for i in ['Задача', 'Исполнитель', 'Дата создания'] %}
+            {% for i in ['Задача', 'Дата создания', 'Действия'] %}
             <th>{{i}}</th>
             {% endfor %}
             </tr>
@@ -17,8 +17,11 @@
             {% for row in task_list %}
             <tr>
                 <td>{{row.description}}</td>
-                <td>{{row.username if row.username else 'не назначен'}}</td>
                 <td>{{row.creation_date | local_date}}</td>
+                <td>
+                    <a href="{{url_for('tasks.finish_task', task_id=row.id)}}"><span uk-icon="check" style="padding-left: 15px;"></span></a>
+                    <a href="{{url_for('tasks.cancel_task', task_id=row.id)}}"><span uk-icon="ban" style="padding-left: 15px;"></span></a>
+                </td>
             </tr>
             {% endfor %}
         </tbody>

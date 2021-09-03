@@ -15,9 +15,11 @@
         </thead>
         <tbody>
             {% for row in task_list %}
-            <tr>
+            <tr class="{{- 'uk-text-danger' if row.cancel_date|local_date else 
+                           'uk-text-success' if row.finish_date|local_date else
+                           'uk-text-primary' if row.start_date|local_date -}}">
                 <td>{{row.description}}</td>
-                <td>{{row.username if row.username else 'не назначен'}}</td>
+                <td>{{row.username if row.username else '-'}}</td>
                 <td>{{row.creation_date | local_date}}</td>
                 <td>{{row.start_date | local_date}}</td>
                 <td>{{row.finish_date | local_date}}</td>

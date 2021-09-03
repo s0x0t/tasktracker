@@ -15,7 +15,7 @@ from werkzeug.security import generate_password_hash
 
 from datetime import datetime
 
-engine = create_engine('sqlite:///task_tracker.db', echo=True)
+engine = create_engine('sqlite:///task_tracker.db', echo=False)
 meta = MetaData()
 
 users = Table('users', meta,
@@ -28,8 +28,6 @@ users = Table('users', meta,
 tasks = Table('tasks', meta,
     Column('id', Integer, primary_key=True),
     Column('description', String),
-    # Column('creator_id', Integer),        # Было бы полезно, но не задано условями задачи
-    # Column('executor_id', Integer, ForeignKey('users.id')),
     Column('executor_id', Integer),
     Column('creation_date', String),
     Column('start_date', String),
@@ -68,7 +66,11 @@ def get_task_list(user_id=None):
                 tasks.c.creation_date,
                 users.c.username
                 ).select_from(tasks.outerjoin(users, tasks.c.executor_id == users.c.id)
-                ).where(tasks.c.executor_id == user_id)
+                ).where(and_(
+                    tasks.c.executor_id == user_id,
+                    tasks.c.finish_date == None,
+                    tasks.c.cancel_date == None,
+                    ))
         result = conn.execute(request)
         task_list = result.fetchall()
     return task_list
@@ -89,21 +91,32 @@ def get_all_tasks():
 
 def insert_new_task(description):
     with engine.connect() as conn:
-        result = conn.execute(tasks.insert().values(description=description, creation_date=datetime.date(datetime.now())))
-    return result
+        conn.execute(tasks.insert().values(description=description, creation_date=datetime.date(datetime.now())))
+    return
 
-def update_take_task(task_id, executor_id):
+def update_start_task(task_id, executor_id):
     with engine.connect() as conn:
-        result = conn.execute(tasks.update().where(tasks.c.id == task_id).values(executor_id=executor_id))
-    return result
+        conn.execute(tasks.update().where(tasks.c.id == task_id).values(executor_id=executor_id, start_date=datetime.date(datetime.now())))
+    return
+
+def update_finish_task(task_id):
+    with engine.connect() as conn:
+        conn.execute(tasks.update().where(tasks.c.id == task_id).values(finish_date=datetime.date(datetime.now())))
+    return
+
+def update_cancel_task(task_id):
+    with engine.connect() as conn:
+        conn.execute(tasks.update().where(tasks.c.id == task_id).values(cancel_date=datetime.date(datetime.now())))
+    return
 
 def get_statistics():
     with engine.connect() as conn:
-        opened = conn.execute(select(func.count(tasks.c.id)).where(tasks.c.start_date == None)).fetchone()
+        opened = conn.execute(select(func.count(tasks.c.id)).where(tasks.c.executor_id == None)).fetchone()
         cancelled = conn.execute(select(func.count(tasks.c.id)).where(tasks.c.cancel_date != None)).fetchone()
         executing = conn.execute(select(func.count(tasks.c.id)).where(and_(
                 tasks.c.start_date != None,
-                tasks.c.finish_date == None
+                tasks.c.finish_date == None,
+                tasks.c.cancel_date == None,
                 ))).fetchone()
 
         request = select(tasks.c.start_date, tasks.c.finish_date).where(and_(
@@ -115,7 +128,7 @@ def get_statistics():
     for task in executed_tasks:
         duration = (str_to_date(task[1]) - str_to_date(task[0])).days
         durations.append(duration)
-    average_execute_time = sum(durations)/len(durations)
+    average_execute_time = round(sum(durations)/len(durations), 2)
 
     parameter_list = dict()
     parameter_list['Открытых задач'] = opened[0]

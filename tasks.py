@@ -14,7 +14,9 @@ from .db import (
     get_all_tasks,
     get_statistics,
     insert_new_task,
-    update_take_task
+    update_start_task,
+    update_finish_task,
+    update_cancel_task,
     )
 from .auth import login_required
 
@@ -30,9 +32,6 @@ def index():
 def open_tasks():
     username = g.user.username
     task_list = get_task_list()
-    for task in task_list:
-        # task['href'] = url_for('tasks.take_task', task_id=task.id)
-        print(type(task))
     return render_template('tasks/open_tasks.html', task_list=task_list, username=username)
 
 @bp.route('/create', methods=('GET', 'POST'))
@@ -43,16 +42,6 @@ def create_task():
         insert_new_task(description)
     username = g.user.username
     return render_template('tasks/new_task.html', username=username)
-
-# @bp.route('/id/')
-# @login_required
-# def task():
-#     return redirect('/list')
-
-# @bp.route('/id/<int:id>')
-# @login_required
-# def task_id(id):
-#     return f"task number {id} description"
 
 @bp.route('/my')
 @login_required
@@ -76,10 +65,24 @@ def stat():
     parameter_list = get_statistics()
     return render_template('tasks/stat.html', parameter_list=parameter_list, username=username)
 
-@bp.route('/take_task/<int:task_id>')
+@bp.route('/start_task/<int:task_id>')
 @login_required
-def take_task(task_id):
+def start_task(task_id):
     username = g.user.username
     executor_id = g.user.id
-    update_take_task(task_id, executor_id)
+    update_start_task(task_id, executor_id)
+    return redirect(url_for('tasks.my_tasks'))
+
+@bp.route('/finish_task/<int:task_id>')
+@login_required
+def finish_task(task_id):
+    username = g.user.username
+    update_finish_task(task_id)
+    return redirect(url_for('tasks.my_tasks'))
+
+@bp.route('/cancel_task/<int:task_id>')
+@login_required
+def cancel_task(task_id):
+    username = g.user.username
+    update_cancel_task(task_id)
     return redirect(url_for('tasks.my_tasks'))

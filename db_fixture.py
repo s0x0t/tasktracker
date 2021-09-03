@@ -1,5 +1,4 @@
-#!/usr/bin/env python3.6
-# coding: utf-8
+#!/usr/bin/env python
 
 from sqlalchemy import create_engine
 from db import meta, users, tasks
@@ -26,27 +25,56 @@ def fill_db():
         {'id': 1, 'description': 'Задача № 1', 'executor_id': 1, 
                     'creation_date' : datetime.date(datetime(2021, 8, 25)), 
                     'start_date'    : datetime.date(datetime(2021, 8, 26)), 
-                    'finish_date'   : datetime.date(datetime(2021, 8, 27)) 
+                    'finish_date'   : datetime.date(datetime(2021, 8, 27)),
+                    'cancel_date'   : None
                     },
         {'id': 2, 'description': 'Задача № 2', 'executor_id': 2, 
                     'creation_date' : datetime.date(datetime(2021, 8, 26)), 
                     'start_date'    : datetime.date(datetime(2021, 8, 27)), 
-                    'finish_date'   : None 
+                    'finish_date'   : None,
+                    'cancel_date'   : None
                     },
         {'id': 3, 'description': 'Задача № 3', 'executor_id': 5, 
+                    'creation_date' : datetime.date(datetime(2021, 8, 26)), 
+                    'start_date'    : datetime.date(datetime(2021, 8, 29)), 
+                    'finish_date'   : datetime.date(datetime(2021, 8, 30)),
+                    'cancel_date'   : None
+                    },
+        {'id': 4, 'description': 'Задача № 4', 'executor_id': 4, 
+                    'creation_date' : datetime.date(datetime(2021, 8, 28)), 
+                    'start_date'    : datetime.date(datetime(2021, 8, 28)), 
+                    'finish_date'   : None,
+                    'cancel_date'   : datetime.date(datetime(2021, 9, 1)), 
+                    },
+        {'id': 5, 'description': 'Задача № 5', 'executor_id': 3, 
+                    'creation_date' : datetime.date(datetime(2021, 8, 29)), 
+                    'start_date'    : datetime.date(datetime(2021, 9, 2)), 
+                    'finish_date'   : None,
+                    'cancel_date'   : None
+                    },
+        {'id': 6, 'description': 'Задача № 6', 'executor_id': None, 
+                    'creation_date' : datetime.date(datetime(2021, 8, 29)), 
+                    'start_date'    : None, 
+                    'finish_date'   : None,
+                    'cancel_date'   : None
+                    },
+        {'id': 7, 'description': 'Задача № 7', 'executor_id': None, 
                     'creation_date' : datetime.date(datetime(2021, 8, 30)), 
-                    'start_date'    : datetime.date(datetime(2021, 8, 30)), 
-                    'finish_date'   : datetime.date(datetime(2021, 8, 30))
-                    },
-        {'id': 4, 'description': 'Задача № 4', 'executor_id': None, 
-                    'creation_date' : datetime.date(datetime(2021, 8, 31)), 
                     'start_date'    : None, 
-                    'finish_date'   : None
+                    'finish_date'   : None,
+                    'cancel_date'   : None
                     },
-        {'id': 5, 'description': 'Задача № 5', 'executor_id': None, 
-                    'creation_date' : datetime.date(datetime.now()), 
+        {'id': 8, 'description': 'Задача № 8', 'executor_id': None, 
+                    'creation_date' : datetime.date(datetime(2021, 9, 1)), 
                     'start_date'    : None, 
-                    'finish_date'   : None
+                    'finish_date'   : None,
+                    'cancel_date'   : None
+                    },
+        {'id': 9, 'description': 'Задача № 9', 'executor_id': None, 
+                    'creation_date' : datetime.date(datetime(2021, 9, 2)), 
+                    'start_date'    : None, 
+                    'finish_date'   : None,
+                    'cancel_date'   : None 
                     },
     ])
 

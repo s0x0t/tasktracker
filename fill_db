@@ -1,0 +1,4 @@
+﻿
+source venv/bin/activate
+export FLASK_APP='.'
+python db_fixture.py
