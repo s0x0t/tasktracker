@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block header %}
+Архив задач
+{% endblock %}
+
+{% block content %}
+    <table class="uk-table uk-table-striped uk-table-hover">
+        <thead>
+            <tr>
+            {% for i in ['Задача', 'Исполнитель', 'Дата создания', 'Взятие в работу', 'Завершение', 'Дата отмены'] %}
+            <th>{{i}}</th>
+            {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in task_list %}
+            <tr>
+                <td>{{row.description}}</td>
+                <td>{{row.username if row.username else 'не назначен'}}</td>
+                <td>{{row.creation_date | local_date}}</td>
+                <td>{{row.start_date | local_date}}</td>
+                <td>{{row.finish_date | local_date}}</td>
+                <td>{{row.cancel_date | local_date}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

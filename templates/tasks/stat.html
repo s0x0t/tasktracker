@@ -1,20 +1,23 @@
 {% extends "base.html" %}
 
+{% block header %}
+Статистика по задачам
+{% endblock %}
+
 {% block content %}
-    <h1 class="uk-text-center">Список задач</h1>
     <table class="uk-table uk-table-striped uk-table-hover">
         <thead>
             <tr>
-            {% for i in ['Задача', 'Исполнитель'] %}
+            {% for i in ['Параметр', 'Значение'] %}
             <th>{{i}}</th>
             {% endfor %}
             </tr>
         </thead>
         <tbody>
-            {% for row in task_list %}
+            {% for k, v in parameter_list.items() %}
             <tr>
-                <td>{{row['description']}}</td>
-                <td>{{row['username']}}</td>
+                <td>{{k}}</td>
+                <td>{{v}}</td>
             </tr>
             {% endfor %}
         </tbody>
